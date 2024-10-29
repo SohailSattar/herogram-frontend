@@ -1,6 +1,9 @@
 // src/context/AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import localStorageService from "../network/localStorageService";
+import { useNavigate } from "react-router-dom";
+
+import * as RoutePath from "../RouteConfig";
 
 interface AuthContextType {
 	user: string | null;
@@ -14,6 +17,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<string | null>(null);
+	const navgate = useNavigate();
 
 	const login = async (username: string, password: string) => {
 		try {
@@ -26,6 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 			if (response.ok) {
 				setUser(data.token);
 				localStorageService.setJwtToken(data.token);
+				navgate(RoutePath.FILES);
 			} else {
 				console.error("Login failed", data);
 			}
